@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+// Variables
 var keys = require("./keys.js");
 var fs = require("fs");
 var Spotify = require('node-spotify-api');
@@ -46,6 +47,7 @@ function myTweets() {
         if (!error) {
             for (var i = 0; i < tweets.length; i++) {
                 console.log(tweets[i].text);
+                console.log(tweets[i].created_at);
             };
         } else {
             console.log("error: " + err);
@@ -56,15 +58,15 @@ function myTweets() {
 
 function spotifyThisSong(songName) {
     console.log('Do what ' + songName);
-    // var songName = process.argv[3];
+    
     if (songName) {
         var songRequest = songName;
        ;
     } else {
         var songRequest = "The Sign Ace of Base"
-        // var songName = process.argv[3];
+        
     };
-    // 
+    
     spotify.search({
         type: "track",
         query: songRequest
@@ -81,6 +83,11 @@ function spotifyThisSong(songName) {
                         "Album: " + songInfo[i].album.name + "\n"
 
                         console.log(spotifyResponse);
+
+                        fs.appendFile("log.txt", spotifyResponse, function(err) {
+                            if (err) throw err;
+                            console.log('Saved!');
+                        });
                         
                     };
                 };
@@ -110,7 +117,14 @@ function movieThis() {
 
             console.log(omdbResponse);
 
-        } else {
+            fs.appendFile("log.txt", omdbResponse, function(err) {
+                if (err) throw err;
+                console.log('Saved!');
+                
+            });
+             
+
+        } else { 
             console.log("error: " + err);
             return;
         };
