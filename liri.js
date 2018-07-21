@@ -5,6 +5,7 @@ var fs = require("fs");
 var Spotify = require('node-spotify-api');
 var spotify = new Spotify(keys.spotify);
 var request = require("request")
+var movieName = process.argv[3];
 var liriReturn = process.argv[2];
 var twitter = require('twitter');
 var client = new twitter(keys.twitter);
@@ -21,6 +22,9 @@ switch (liriReturn) {
     spotifyThisSong();
     break;
     
+    case "movie-this":
+    movieThis();
+    break;
 
     default: console.log("\n" + "type one of the following commands after 'node liri.js': " + "\n" +
         "my-tweets" + "\n" +
@@ -78,3 +82,28 @@ function spotifyThisSong(songName) {
         });
 };
 
+function movieThis() {
+    var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+
+    request(queryUrl, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+
+            var movieInfo = JSON.parse(body);
+            var omdbResponse =
+            "Title: " + movieInfo.Title + "\n" +
+            "Year: " + movieInfo.Year + "\n" +
+            "IMDB Rating: " + movieInfo.Ratings[0].Value + "\n" +
+            "Rotten Tomatoes Rating: " + movieInfo.Ratings[1].Value + "\n" +
+            "Origin Country: " + movieInfo.Country + "\n" +
+            "Language: " + movieInfo.Language + "\n" +
+            "Plot: " + movieInfo.Plot + "\n" +
+            "Actors: " + movieInfo.Actors + "\n"
+
+            console.log(omdbResponse);
+
+        } else {
+            console.log("error: " + err);
+            return;
+        };
+    });
+};
